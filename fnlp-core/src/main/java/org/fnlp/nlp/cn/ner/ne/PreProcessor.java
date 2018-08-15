@@ -1,21 +1,21 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.nlp.cn.ner.ne;
 
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * 字符串预处理模块，为分析器TimeNormalizer提供相应的字符串预处理服务
- * 
+ *
  * @author 曹零07300720158
  *
  */
@@ -33,7 +33,7 @@ public class PreProcessor {
     /**
      * 该方法删除一字符串中所有匹配某一规则字串
      * 可用于清理一个字符串中的空白符和语气助词
-     * 
+     *
      * @param target 待处理字符串
      * @param rules 删除规则
      * @return 清理工作完成后的字符串
@@ -63,7 +63,7 @@ public class PreProcessor {
      * 一六零加一五八可以转化为160+158
      * 该方法目前支持的正确转化范围是0-99999999
      * 该功能模块具有良好的复用性
-     * 
+     *
      * @param target 待转化的字符串
      * @return 转化完毕后的字符串
      */
@@ -248,7 +248,7 @@ public class PreProcessor {
 
     /**
      * 方法numberTranslator的辅助方法，可将[零-九]正确翻译为[0-9]
-     * 
+     *
      * @param s 大写数字
      * @return 对应的整形数，如果不是大写数字返回-1
      */

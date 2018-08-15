@@ -1,35 +1,34 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.ml.types.alphabet;
+
+import gnu.trove.impl.hash.TIntHash;
+import gnu.trove.iterator.TIntIntIterator;
+import gnu.trove.map.hash.TIntIntHashMap;
+import org.fnlp.util.hash.AbstractHashCode;
+import org.fnlp.util.hash.MurmurHash;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.fnlp.util.hash.AbstractHashCode;
-import org.fnlp.util.hash.MurmurHash;
-
-import gnu.trove.impl.hash.TIntHash;
-import gnu.trove.iterator.TIntIntIterator;
-import gnu.trove.map.hash.TIntIntHashMap;
 
 /**
  * 特征词典
@@ -52,7 +51,6 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
      */
     protected boolean frozen;
 
-    
 
     /**
      * 最后一个特征的位置
@@ -60,7 +58,7 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
     private int last;
 
     public HashFeatureAlphabet() {
-        intdata = new TIntIntHashMap(DEFAULT_CAPACITY,DEFAULT_LOAD_FACTOR,noEntryValue,noEntryValue);
+        intdata = new TIntIntHashMap(DEFAULT_CAPACITY, DEFAULT_LOAD_FACTOR, noEntryValue, noEntryValue);
         frozen = false;
         last = 0;
     }
@@ -74,14 +72,13 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
     public int lookupIndex(String str, int indent) {
         String s = checkKeyMap(str);
         int code = hashcode.hashcode(s);
-        if(!frozen){
-            if (!map.containsKey(code)) 
-            {
+        if (!frozen) {
+            if (!map.containsKey(code)) {
                 HashSet<String> hashset = new HashSet<String>();
                 hashset.add(s);
                 count++;
                 map.put(code, hashset);
-            }else{
+            } else {
                 HashSet<String> hashset = map.get(code);
                 if (!hashset.contains(s)) {
                     count++;
@@ -89,7 +86,7 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
                 }
             }
         }
-        return lookupIndex(code, indent);       
+        return lookupIndex(code, indent);
     }
 
     private String checkKeyMap(String s) {
@@ -108,7 +105,7 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
 
         int ret = intdata.get(code);
 
-        if (ret==-1 && !frozen) {//字典中没有，并且允许插入
+        if (ret == -1 && !frozen) {//字典中没有，并且允许插入
 
             synchronized (this) {
                 intdata.put(code, last);
@@ -124,6 +121,7 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
     public int size() {
         return last;
     }
+
     @Override
     public int keysize() {
         return intdata.size();
@@ -143,13 +141,13 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
         String str = checkKeyMap(s);
         int code = hashcode.hashcode(str);
         int ret = -1;
-        if (intdata.containsKey(code))  {
+        if (intdata.containsKey(code)) {
             ret = intdata.remove(code);
         }
         return ret;
     }
 
-    public boolean adjust(String s, int adjust)   {
+    public boolean adjust(String s, int adjust) {
         String str = checkKeyMap(s);
         int code = hashcode.hashcode(str);
         return intdata.adjustValue(code, adjust);
@@ -157,7 +155,7 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
 
     public void clear() {
         intdata.clear();
-        last=0;
+        last = 0;
         frozen = false;
     }
 
@@ -165,15 +163,15 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
         int conflict = 0;
         Iterator it = map.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            HashSet<String> hashset = (HashSet<String>)entry.getValue();
+            Map.Entry entry = (Map.Entry) it.next();
+            HashSet<String> hashset = (HashSet<String>) entry.getValue();
             conflict += (hashset.size() - 1);
             //            if(hashset.size() >1)
             //              System.out.println(hashset);
         }
-        System.out.println(conflict + " / " + count + " = " + (double)conflict/(double)count);
+        System.out.println(conflict + " / " + count + " = " + (double) conflict / (double) count);
         map.clear();
-        map =null;
+        map = null;
     }
 
     @Override
@@ -185,6 +183,7 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
     public void setStopIncrement(boolean b) {
         frozen = b;
     }
+
     @Override
     public TIntHash toInverseIndexMap() {
         // TODO Auto-generated method stub
@@ -192,7 +191,7 @@ public final class HashFeatureAlphabet implements IFeatureAlphabet {
     }
 
     @Override
-    public TIntIntIterator iterator() {     
+    public TIntIntIterator iterator() {
         return intdata.iterator();
     }
 

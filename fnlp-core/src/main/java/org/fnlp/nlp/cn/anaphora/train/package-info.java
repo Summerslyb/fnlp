@@ -1,7 +1,5 @@
-
 /**
  * @author xpqiu
- *
  */
 package org.fnlp.nlp.cn.anaphora.train;
 

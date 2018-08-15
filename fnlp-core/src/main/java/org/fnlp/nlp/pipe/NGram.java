@@ -1,34 +1,28 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.nlp.pipe;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.fnlp.ml.types.Instance;
 import org.fnlp.util.exception.UnsupportedDataTypeException;
+
+import java.util.*;
 
 /**
  * 由输入序列生成ngram特征，data类型转为List
@@ -37,16 +31,16 @@ import org.fnlp.util.exception.UnsupportedDataTypeException;
  * @author xpqiu
  *
  */
-public class NGram extends Pipe{
+public class NGram extends Pipe {
 
     private static final long serialVersionUID = -2329969202592736092L;
     int[] gramSizes = null;
     /**
      * 用基于字而不是词的Ngram
      */
-	private boolean useCharacter = false;
-    
-    public NGram(int[] sizes,boolean useCharacter) {
+    private boolean useCharacter = false;
+
+    public NGram(int[] sizes, boolean useCharacter) {
         this.gramSizes = sizes;
         this.useCharacter = useCharacter;
     }
@@ -60,29 +54,29 @@ public class NGram extends Pipe{
         Object data = inst.getData();
         ArrayList<String> list = null;
         if (data instanceof String) {
-        	if(useCharacter)
-        		list = ngramOnCharacter2List((String) data,gramSizes);
-        	else{ 
-        		 list = ngram((String) data,gramSizes);
-        	}
-        		
-        }else if (data instanceof List) {
-            list = ngram((List) data,gramSizes);
-        }else if(data instanceof String[]){
-            list = ngram((String[]) data,gramSizes);
-        }else{
-            throw new UnsupportedDataTypeException("不支持处理数据类型："+data.getClass().toString());
+            if (useCharacter)
+                list = ngramOnCharacter2List((String) data, gramSizes);
+            else {
+                list = ngram((String) data, gramSizes);
+            }
+
+        } else if (data instanceof List) {
+            list = ngram((List) data, gramSizes);
+        } else if (data instanceof String[]) {
+            list = ngram((String[]) data, gramSizes);
+        } else {
+            throw new UnsupportedDataTypeException("不支持处理数据类型：" + data.getClass().toString());
         }
         inst.setData(list);
     }
-    
-    
-    private ArrayList<String> ngram(String str, int[] gramSizes) {
-    	String[] toks = str.split("\\s+");
-    	return ngram(toks,gramSizes);
-	}
 
-	/**
+
+    private ArrayList<String> ngram(String str, int[] gramSizes) {
+        String[] toks = str.split("\\s+");
+        return ngram(toks, gramSizes);
+    }
+
+    /**
      * 抽取ngram
      * @param strs
      * @param grams
@@ -95,14 +89,14 @@ public class NGram extends Pipe{
             int len = grams[j];
             if (len <= 0 || len > strs.length)
                 continue;
-            for (int i = 0; i < strs.length - len+1; i++) {
+            for (int i = 0; i < strs.length - len + 1; i++) {
                 buf.delete(0, buf.length());
                 int k = 0;
-                for(; k < len-1; ++k)   {
-                    buf.append(strs[i+k]);
+                for (; k < len - 1; ++k) {
+                    buf.append(strs[i + k]);
                     buf.append(' ');
                 }
-                buf.append(strs[i+k]);
+                buf.append(strs[i + k]);
                 list.add(buf.toString().intern());
             }
         }
@@ -122,14 +116,14 @@ public class NGram extends Pipe{
             int len = gramSizes[j];
             if (len <= 0 || len > tokens.size())
                 continue;
-            for (int i = 0; i < tokens.size() - len+1; i++) {
+            for (int i = 0; i < tokens.size() - len + 1; i++) {
                 buf.delete(0, buf.length());
                 int k = 0;
-                for(; k < len-1; ++k)   {
-                    buf.append(tokens.get(i+k));
+                for (; k < len - 1; ++k) {
+                    buf.append(tokens.get(i + k));
                     buf.append(' ');
                 }
-                buf.append(tokens.get(i+k));
+                buf.append(tokens.get(i + k));
                 list.add(buf.toString().intern());
             }
         }
@@ -142,20 +136,20 @@ public class NGram extends Pipe{
      * @param gramSizes
      * @return ngram字符串数组
      */
-    public static ArrayList<String> ngramOnCharacter2List(String data,int[] gramSizes) {
+    public static ArrayList<String> ngramOnCharacter2List(String data, int[] gramSizes) {
         // 提取ngram
         ArrayList<String> list = new ArrayList<String>();
         ngramOnCharacter(data, gramSizes, list);
         return list;
     }
-    
+
     /**
      * 提取ngram
      * @param data
      * @param gramSizes
      * @return ngram字符串集合
      */
-    public static Set<String> ngramOnCharacter2Set(String data,int[] gramSizes) {
+    public static Set<String> ngramOnCharacter2Set(String data, int[] gramSizes) {
         // 提取ngram
         Set<String> list = new HashSet<String>();
         ngramOnCharacter(data, gramSizes, list);
@@ -169,8 +163,8 @@ public class NGram extends Pipe{
      * @param list
      */
     private static void ngramOnCharacter(String data, int[] gramSizes, Collection<String> list) {
-    	data = data.replaceAll("\\s+", "");
-    	for (int j = 0; j < gramSizes.length; j++) {
+        data = data.replaceAll("\\s+", "");
+        for (int j = 0; j < gramSizes.length; j++) {
             int len = gramSizes[j];
             if (len <= 0 || len > data.length())
                 continue;
@@ -179,5 +173,5 @@ public class NGram extends Pipe{
             }
         }
     }
-    
+
 }

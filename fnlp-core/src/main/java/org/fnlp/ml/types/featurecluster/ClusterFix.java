@@ -1,30 +1,25 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.ml.types.featurecluster;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ClusterFix extends AbstractCluster {
     private ArrayList<ClassData> datalist;
@@ -40,7 +35,7 @@ public class ClusterFix extends AbstractCluster {
         this.datalist = datalist;
         this.distance = distance;
         this.feasize = feasize;
-        map  = new HashMap<Integer, Integer>();
+        map = new HashMap<Integer, Integer>();
         mapList = new HashMap<Integer, ArrayList<Integer>>();
         distanceList = new ArrayList<ArrayList<Double>>();
         idList = new ArrayList<Integer>();
@@ -69,7 +64,7 @@ public class ClusterFix extends AbstractCluster {
 
     private void setAllCount() {
         int allCount = 0;
-        for (ClassData cd : datalist) 
+        for (ClassData cd : datalist)
             allCount += cd.getCount();
         ClassData.allCount = allCount;
     }
@@ -119,7 +114,7 @@ public class ClusterFix extends AbstractCluster {
         int length = label1.length;
         double[] label = new double[length];
         for (int i = 0; i < length; i++) {
-            label[i] = ratio * label1[i] + (1-ratio) * label2[i];
+            label[i] = ratio * label1[i] + (1 - ratio) * label2[i];
         }
         return label;
     }
@@ -145,7 +140,7 @@ public class ClusterFix extends AbstractCluster {
             ArrayList<Double> disId = new ArrayList<Double>();
             idList.add(i);
             for (int j = 0; j < feasize; j++) {
-                double distemp =  distance.cal(datalist.get(i), datalist.get(j));
+                double distemp = distance.cal(datalist.get(i), datalist.get(j));
                 disId.add(distemp);
             }
             distanceList.add(disId);
@@ -163,8 +158,7 @@ public class ClusterFix extends AbstractCluster {
             if (i < id) {
                 double oridata = getDistance(i, id);
                 updateSortMap(i, id, oridata, distemp);
-            }
-            else {
+            } else {
                 double oridata = getDistance(id, i);
                 updateSortMap(id, i, oridata, distemp);
             }
@@ -172,7 +166,7 @@ public class ClusterFix extends AbstractCluster {
             setDistance(i, id, distemp);
         }
     }
-    
+
     private void setDistance(int i, int j, double value) {
         ArrayList<Double> disId = distanceList.get(i);
         disId.set(j, value);
@@ -249,8 +243,7 @@ public class ClusterFix extends AbstractCluster {
         if (sortmap.containsKey(updatedata)) {
             Set<String> set = sortmap.get(updatedata);
             set.add(id2String(a, b));
-        }
-        else {
+        } else {
             Set<String> set = new HashSet<String>();
             set.add(id2String(a, b));
             sortmap.put(updatedata, set);

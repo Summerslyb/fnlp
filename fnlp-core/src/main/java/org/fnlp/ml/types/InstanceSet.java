@@ -1,42 +1,36 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.ml.types;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import org.fnlp.data.reader.Reader;
 import org.fnlp.ml.types.alphabet.AlphabetFactory;
 import org.fnlp.nlp.pipe.Pipe;
 import org.fnlp.nlp.pipe.SeriesPipes;
 
+import java.util.*;
+
 /**
  * 样本集合
- * 
+ *
  * @author xpqiu
- * 
+ *
  */
 public class InstanceSet extends ArrayList<Instance> {
 
@@ -49,8 +43,8 @@ public class InstanceSet extends ArrayList<Instance> {
      * 本样本集合对应的特征和标签索引字典管理器
      */
     private AlphabetFactory factory = null;
-    
-    
+
+
     public int numFeatures = 0;
     public String name = "";
 
@@ -66,26 +60,25 @@ public class InstanceSet extends ArrayList<Instance> {
     public InstanceSet(AlphabetFactory factory) {
         this.factory = factory;
     }
-    
+
     public InstanceSet() {
     }
 
-    
 
     /**
      * 分割样本集，将样本集合中样本放随机放在两个集合，大小分别为i/n,(n-i)/n
-     * 
+     *
      * @param i 第一个集合比例 
      * @param n 集合样本总数（相对于i）
      * @return
      */
     public InstanceSet[] split(int i, int n) {
-        return split((float) i/(float)n);
+        return split((float) i / (float) n);
     }
-    
+
     /**
      * 分割样本集，将样本集合中样本放随机放在两个集合，大小分别为i/n,(n-i)/n
-     * 
+     *
      * @param percent 分割比例 必须在0,1之间
      * @return
      */
@@ -95,10 +88,10 @@ public class InstanceSet extends ArrayList<Instance> {
         InstanceSet[] sets = new InstanceSet[2];
         sets[0] = new InstanceSet(pipes, factory);
         sets[1] = new InstanceSet(pipes, factory);
-        int idx = (int) Math.round(percent*length);
+        int idx = (int) Math.round(percent * length);
         sets[0].addAll(subList(0, idx));
-        if(idx+1<length)            
-            sets[1].addAll(subList(idx+1, length));
+        if (idx + 1 < length)
+            sets[1].addAll(subList(idx + 1, length));
         return sets;
     }
 
@@ -113,7 +106,7 @@ public class InstanceSet extends ArrayList<Instance> {
         List<ArrayList<Integer>> list = listLabel(flag);
         flag = randomSet(flag, list, percent);
         for (int i = 0; i < flag.length; i++) {
-            if (flag[i] < 0) 
+            if (flag[i] < 0)
                 sets[0].add(this.get(i));
             else
                 sets[1].add(this.get(i));
@@ -123,7 +116,7 @@ public class InstanceSet extends ArrayList<Instance> {
 
     public int[] randomSet(int[] flag, List<ArrayList<Integer>> list, float percent) {
         Random r = new Random();
-        for(ArrayList<Integer> alist : list) {
+        for (ArrayList<Integer> alist : list) {
             int allsize = Math.round(alist.size() * percent);
             int count = 0;
             while (true) {
@@ -145,7 +138,7 @@ public class InstanceSet extends ArrayList<Instance> {
         int classsize = classSize().size();
         for (int i = 0; i < classsize; i++) {
             List<Integer> ll = new ArrayList<Integer>();
-            list.add((ArrayList<Integer>)ll);
+            list.add((ArrayList<Integer>) ll);
         }
         for (int i = 0; i < flag.length; i++) {
             int ele = flag[i];
@@ -158,7 +151,7 @@ public class InstanceSet extends ArrayList<Instance> {
     public int[] labelFlag() {
         int length = this.size();
         int[] flag = new int[length];
-        Map<Object,Integer> map = classSize();
+        Map<Object, Integer> map = classSize();
         for (int i = 0; i < length; i++) {
             Object target = this.get(i).getTarget();
             int label = map.get(target);
@@ -177,11 +170,11 @@ public class InstanceSet extends ArrayList<Instance> {
         }
         return map;
     }
-    
-    public InstanceSet subSet(int from,int end){
+
+    public InstanceSet subSet(int from, int end) {
         InstanceSet set = new InstanceSet();
         set = new InstanceSet(pipes, factory);
-        set.addAll(subList(from,end));
+        set.addAll(subList(from, end));
         return set;
     }
 
@@ -203,7 +196,7 @@ public class InstanceSet extends ArrayList<Instance> {
 
     /**
      * 分步骤批量处理数据，每个Pipe处理完所有数据再进行下一个Pipe
-     * 
+     *
      * @param reader
      * @throws Exception
      */
@@ -213,22 +206,23 @@ public class InstanceSet extends ArrayList<Instance> {
         Pipe p1 = p.getPipe(0);
         while (reader.hasNext()) {
             Instance inst = reader.next();
-            if(inst!=null){
+            if (inst != null) {
                 if (p1 != null)
                     p1.addThruPipe(inst);
                 this.add(inst);
-               
-            };
+
+            }
+            ;
         }
         for (int i = 1; i < p.size(); i++)
             p.getPipe(i).process(this);
     }
-    
+
     /**
      * 实验用, 为了MultiCorpus, 工程开发请忽略
-     * 
+     *
      * 分步骤批量处理数据，每个Pipe处理完所有数据再进行下一个Pipe
-     * 
+     *
      * @param readers
      * @throws Exception
      */
@@ -236,18 +230,19 @@ public class InstanceSet extends ArrayList<Instance> {
         SeriesPipes p = (SeriesPipes) pipes;
         // 通过迭代加入样本
         Pipe p1 = p.getPipe(0);
-        for(int i = 0; i < readers.length; i++) {
-	        while (readers[i].hasNext()) {
-	            Instance inst = readers[i].next();
-	            inst.setClasue(corpusNames[i]);
-	            if(inst!=null){
-	                if (p1 != null)
-	                    p1.addThruPipe(inst);
-	                this.add(inst);
-	            };
-	        }
+        for (int i = 0; i < readers.length; i++) {
+            while (readers[i].hasNext()) {
+                Instance inst = readers[i].next();
+                inst.setClasue(corpusNames[i]);
+                if (inst != null) {
+                    if (p1 != null)
+                        p1.addThruPipe(inst);
+                    this.add(inst);
+                }
+                ;
+            }
         }
-        
+
         for (int i = 1; i < p.size(); i++)
             p.getPipe(i).process(this);
     }
@@ -255,31 +250,31 @@ public class InstanceSet extends ArrayList<Instance> {
     public void shuffle() {
         Collections.shuffle(this);
     }
-    
+
     public void sortByWeights() {
         Collections.sort(this, new Comparator<Instance>() {
-			@Override
-			public int compare(Instance o1, Instance o2) {
-				
-				float f1 = o1.getWeight();
-				float f2 = o2.getWeight();
-				if(f1<f2)
-					return 1;
-				else if(f1>f2)
-					return -1;
-				else
-					return 0;
-			}
-		});
+            @Override
+            public int compare(Instance o1, Instance o2) {
+
+                float f1 = o1.getWeight();
+                float f2 = o2.getWeight();
+                if (f1 < f2)
+                    return 1;
+                else if (f1 > f2)
+                    return -1;
+                else
+                    return 0;
+            }
+        });
     }
 
     public void shuffle(Random r) {
         Collections.shuffle(this, r);
     }
-    
-    public void shuffle(Random r1, Random r2, InstanceSet i){
-    	Collections.shuffle(this, r1);
-    	Collections.shuffle(i, r2);
+
+    public void shuffle(Random r1, Random r2, InstanceSet i) {
+        Collections.shuffle(this, r1);
+        Collections.shuffle(i, r2);
     }
 
     public Pipe getPipes() {
@@ -307,15 +302,15 @@ public class InstanceSet extends ArrayList<Instance> {
     public void setAlphabetFactory(AlphabetFactory factory) {
         this.factory = factory;
     }
-    
-    public String toString(){
-    	StringBuilder sb= new StringBuilder();
-    	for(int i=0;i<size();i++){
-    		sb.append(get(i));
-    		sb.append("\n");
-    	}
-    	return sb.toString();
-    	
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < size(); i++) {
+            sb.append(get(i));
+            sb.append("\n");
+        }
+        return sb.toString();
+
     }
 
 }

@@ -4,6 +4,7 @@ target
 
 # IDEA #
 *.iml
+.idea
 
 # Eclipse #
 .classpath

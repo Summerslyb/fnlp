@@ -1,48 +1,36 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.nlp.similarity.train;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
+import gnu.trove.set.hash.THashSet;
+import org.fnlp.nlp.cn.ChineseTrans;
+import org.fnlp.nlp.similarity.ISimilarity;
+import org.fnlp.nlp.similarity.JaccardSimilarity;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import org.fnlp.nlp.cn.ChineseTrans;
-import org.fnlp.nlp.similarity.ISimilarity;
-import org.fnlp.nlp.similarity.JaccardSimilarity;
-
-import gnu.trove.set.hash.THashSet;
 
 public class WordSimilarity {
 
@@ -141,7 +129,7 @@ public class WordSimilarity {
         reader.close();
         System.out.println("Finished load file");
     }
-    
+
     @SuppressWarnings("unchecked")
     public void calSimilarity(String outpath) throws Exception {
         BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outpath), "UTF-8"));
@@ -151,8 +139,8 @@ public class WordSimilarity {
         for (int i = 0; i < hashlist.size(); i++) {
             bout.write(word.get(i) + "\t");
             for (int j = 0; j < hashlist.size(); j++) {
-                float f = is.calc((THashSet<String>)hashlist.get(i), (THashSet<String>)hashlist.get(j));
-                f = (float)(Math.round(f * 1000)) / 1000;
+                float f = is.calc((THashSet<String>) hashlist.get(i), (THashSet<String>) hashlist.get(j));
+                f = (float) (Math.round(f * 1000)) / 1000;
                 bout.write(f + "\t");
             }
             bout.write("\n");
@@ -163,9 +151,9 @@ public class WordSimilarity {
     private void gramPerString(String str) {
         String s = "^" + str + "*";
         for (int i = 1; i < s.length() - 1; i++) {
-            String c = s.substring(i, i+1);
+            String c = s.substring(i, i + 1);
             if (cmap.containsKey(c)) {
-                String temp = s.substring(i-1, i) + s.substring(i+1, i+2);
+                String temp = s.substring(i - 1, i) + s.substring(i + 1, i + 2);
                 int id = cmap.get(c);
                 hashlist.get(id).add(temp);
             }
@@ -238,7 +226,7 @@ public class WordSimilarity {
         }
         bw.close();
     }
-    
+
     protected Object loadObject(String path) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(
                 new GZIPInputStream(new FileInputStream(path))));
@@ -255,9 +243,9 @@ public class WordSimilarity {
 
     @SuppressWarnings("unchecked")
     public void read(String path) throws IOException, ClassNotFoundException {
-        setHashlist((ArrayList<THashSet<String>>)loadObject(path + "hashlist"));
-        setWord((ArrayList<String>)loadObject(path + "word"));
-        setCmap((HashMap<String, Integer>)loadObject(path + "cmap"));
+        setHashlist((ArrayList<THashSet<String>>) loadObject(path + "hashlist"));
+        setWord((ArrayList<String>) loadObject(path + "word"));
+        setCmap((HashMap<String, Integer>) loadObject(path + "cmap"));
         System.out.println("Finished load model");
     }
 

@@ -2,24 +2,17 @@ package org.fnlp.nlp.langmodel.lda;
 
 
 import gnu.trove.list.array.TIntArrayList;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-
-import org.fnlp.ml.types.alphabet.HashFeatureAlphabet;
 import org.fnlp.ml.types.alphabet.LabelAlphabet;
 import org.fnlp.nlp.corpus.StopWords;
 import org.fnlp.util.MyArrays;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 
 /**
  * LDA模型
@@ -28,7 +21,7 @@ import org.fnlp.util.MyArrays;
  * documents in a corpus. The algorithm is introduced in Tom Griffiths' paper
  * "Gibbs sampling in the generative model of Latent Dirichlet Allocation"
  * (2002).
- * 
+ *
  * @author heinrich
  */
 public class LdaGibbsSampler {
@@ -122,9 +115,8 @@ public class LdaGibbsSampler {
 
     /**
      * Initialise the Gibbs sampler with data.
-     * 
-     * @param V
-     *            vocabulary size
+     *
+     * @param V         vocabulary size
      * @param documents
      */
     public LdaGibbsSampler(int[][] documents, int V) {
@@ -137,10 +129,9 @@ public class LdaGibbsSampler {
      * Initialisation: Must start with an assignment of observations to topics ?
      * Many alternatives are possible, I chose to perform random assignments
      * with equal probabilities
-     * 
-     * @param K
-     *            number of topics
-     *  z assignment of topics to words
+     *
+     * @param K number of topics
+     *          z assignment of topics to words
      */
     public void initialState(int K) {
         int i;
@@ -179,13 +170,10 @@ public class LdaGibbsSampler {
      * Main method: Select initial state ? Repeat a large number of times: 1.
      * Select an element 2. Update conditional on other elements. If
      * appropriate, output summary for each run.
-     * 
-     * @param K
-     *            number of topics
-     * @param alpha
-     *            symmetric prior parameter on document--topic associations
-     * @param beta
-     *            symmetric prior parameter on topic--term associations
+     *
+     * @param K     number of topics
+     * @param alpha symmetric prior parameter on document--topic associations
+     * @param beta  symmetric prior parameter on topic--term associations
      */
     private void gibbs(int K, float alpha, float beta) {
         this.K = K;
@@ -203,8 +191,8 @@ public class LdaGibbsSampler {
         initialState(K);
 
         System.out.println("Sampling " + ITERATIONS
-            + " iterations with burn-in of " + BURN_IN + " (B/S="
-            + THIN_INTERVAL + ").");
+                + " iterations with burn-in of " + BURN_IN + " (B/S="
+                + THIN_INTERVAL + ").");
 
         for (int i = 0; i < ITERATIONS; i++) {
 
@@ -246,11 +234,9 @@ public class LdaGibbsSampler {
      * Sample a topic z_i from the full conditional distribution: p(z_i = j |
      * z_-i, w) = (n_-i,j(w_i) + beta)/(n_-i,j(.) + W * beta) * (n_-i,j(d_i) +
      * alpha)/(n_-i,.(d_i) + K * alpha)
-     * 
-     * @param m
-     *            document
-     * @param n
-     *            word
+     *
+     * @param m document
+     * @param n word
      */
     private int sampleFullConditional(int m, int n) {
 
@@ -265,9 +251,9 @@ public class LdaGibbsSampler {
         float[] p = new float[K];
         for (int k = 0; k < K; k++) {
             p[k] = (word_topic_matrix[documents[m][n]][k] + beta) / (nwsum[k] + V * beta)
-                * (nd[m][k] + alpha) / (ndsum[m] + K * alpha);
+                    * (nd[m][k] + alpha) / (ndsum[m] + K * alpha);
         }
-        
+
         topic = drawFromProbability(p);
 
         // add newly estimated z_i to count variables
@@ -279,9 +265,9 @@ public class LdaGibbsSampler {
         return topic;
     }
 
-	private int drawFromProbability(float[] p) {
-		int idx;
-		// cumulate multinomial parameters
+    private int drawFromProbability(float[] p) {
+        int idx;
+        // cumulate multinomial parameters
         for (int k = 1; k < p.length; k++) {
             p[k] += p[k - 1];
         }
@@ -291,8 +277,8 @@ public class LdaGibbsSampler {
             if (u < p[idx])
                 break;
         }
-		return idx;
-	}
+        return idx;
+    }
 
     /**
      * Add to the statistics the values of theta and phi for the current state.
@@ -314,7 +300,7 @@ public class LdaGibbsSampler {
     /**
      * Retrieve estimated document--topic associations. If sample lag &gt; 0 then
      * the mean value of all sampled statistics for theta[][] is taken.
-     * 
+     *
      * @return theta multinomial mixture of document topics (M x K)
      */
     public float[][] getTheta() {
@@ -341,7 +327,7 @@ public class LdaGibbsSampler {
     /**
      * Retrieve estimated topic--word associations. If sample lag &gt; 0 then the
      * mean value of all sampled statistics for phi[][] is taken.
-     * 
+     *
      * @return phi multinomial mixture of topic words (K x V)
      */
     public float[][] getPhi() {
@@ -364,12 +350,10 @@ public class LdaGibbsSampler {
 
     /**
      * Print table of multinomial data
-     * 
-     * @param data
-     *            vector of evidence
-     * @param fmax
-     *            max frequency in display
-     *  the scaled histogram bin values
+     *
+     * @param data vector of evidence
+     * @param fmax max frequency in display
+     *             the scaled histogram bin values
      */
     public static void hist(float[] data, int fmax) {
 
@@ -405,18 +389,14 @@ public class LdaGibbsSampler {
 
     /**
      * Configure the gibbs sampler
-     * 
-     * @param iterations
-     *            number of total iterations
-     * @param burnIn
-     *            number of burn-in iterations
-     * @param thinInterval
-     *            update statistics interval
-     * @param sampleLag
-     *            sample interval (-1 for just one sample at the end)
+     *
+     * @param iterations   number of total iterations
+     * @param burnIn       number of burn-in iterations
+     * @param thinInterval update statistics interval
+     * @param sampleLag    sample interval (-1 for just one sample at the end)
      */
     public void configure(int iterations, int burnIn, int thinInterval,
-        int sampleLag) {
+                          int sampleLag) {
         ITERATIONS = iterations;
         BURN_IN = burnIn;
         THIN_INTERVAL = thinInterval;
@@ -425,47 +405,47 @@ public class LdaGibbsSampler {
 
     /**
      * Driver with example data.
-     * 
+     *
      * @param args
-     * @throws IOException 
+     * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-    	String infile = "../example-data/data-lda.txt";
-    	String stopwordfile = "../models/stopwords/stopwords.txt";
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				new FileInputStream(infile ), "utf8"));
+        String infile = "../example-data/data-lda.txt";
+        String stopwordfile = "../models/stopwords/stopwords.txt";
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                new FileInputStream(infile), "utf8"));
 
-		//		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+        //		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 //				outfile), enc2));
-		StopWords sw = new StopWords(stopwordfile);
-		
-		LabelAlphabet dict = new LabelAlphabet();
-		// words in documents
-		ArrayList<TIntArrayList> documentsList= new ArrayList<TIntArrayList>();
-		
-		
-		String line = null;
-		while ((line = in.readLine()) != null) {
-			line = line.trim();	
-			if(line.length()==0)
-				continue;
-			String[] toks = line.split("\\s+");
-			TIntArrayList wordlist = new TIntArrayList(); 
-			for(int j=0;j<toks.length;j++){
-				String tok = toks[j];
-				if(sw.isStopWord(tok))
-					continue;
-				int idx = dict.lookupIndex(tok);
-				wordlist.add(idx);
-			}
-			documentsList.add(wordlist);
-		}
-		in.close();
-		int[][] documents;
-		documents = new int[documentsList.size()][];
-		for(int i=0;i<documents.length;i++){
-			documents[i] = documentsList.get(i).toArray();
-		}
+        StopWords sw = new StopWords(stopwordfile);
+
+        LabelAlphabet dict = new LabelAlphabet();
+        // words in documents
+        ArrayList<TIntArrayList> documentsList = new ArrayList<TIntArrayList>();
+
+
+        String line = null;
+        while ((line = in.readLine()) != null) {
+            line = line.trim();
+            if (line.length() == 0)
+                continue;
+            String[] toks = line.split("\\s+");
+            TIntArrayList wordlist = new TIntArrayList();
+            for (int j = 0; j < toks.length; j++) {
+                String tok = toks[j];
+                if (sw.isStopWord(tok))
+                    continue;
+                int idx = dict.lookupIndex(tok);
+                wordlist.add(idx);
+            }
+            documentsList.add(wordlist);
+        }
+        in.close();
+        int[][] documents;
+        documents = new int[documentsList.size()][];
+        for (int i = 0; i < documents.length; i++) {
+            documents[i] = documentsList.get(i).toArray();
+        }
         // vocabulary
         int V = dict.size();
         int M = documents.length;
@@ -487,7 +467,7 @@ public class LdaGibbsSampler {
         System.out.println();
         System.out.println();
         System.out.println("Document--Topic Associations, Theta[d][k] (alpha="
-            + alpha + ")");
+                + alpha + ")");
         System.out.print("d\\k\t");
         for (int m = 0; m < theta[0].length; m++) {
             System.out.print("   " + m % 10 + "    ");
@@ -503,7 +483,7 @@ public class LdaGibbsSampler {
         }
         System.out.println();
         System.out.println("Topic--Term Associations, Phi[k][w] (beta=" + beta
-            + ")");
+                + ")");
 
         System.out.print("k\\w\t");
         for (int w = 0; w < phi[0].length; w++) {
@@ -513,35 +493,33 @@ public class LdaGibbsSampler {
         for (int k = 0; k < phi.length; k++) {
             System.out.print(k + "\t");
             for (int w = 0; w < phi[k].length; w++) {
-            	System.out.print(lnf.format(phi[k][w]) + " ");
+                System.out.print(lnf.format(phi[k][w]) + " ");
 //            	System.out.print(phi[k][w] + " ");
 //                System.out.print(shadefloat(phi[k][w], 1) + " ");
             }
             System.out.println();
         }
         for (int k = 0; k < phi.length; k++) {
-        	int[] top = MyArrays.sort(phi[k]);
-        	
+            int[] top = MyArrays.sort(phi[k]);
+
             for (int w = 0; w < 10; w++) {
-            	System.out.print(dict.lookupString(top[w]) + " ");
+                System.out.print(dict.lookupString(top[w]) + " ");
             }
             System.out.println();
         }
     }
 
     static String[] shades = {"     ", ".    ", ":    ", ":.   ", "::   ",
-        "::.  ", ":::  ", ":::. ", ":::: ", "::::.", ":::::"};
+            "::.  ", ":::  ", ":::. ", ":::: ", "::::.", ":::::"};
 
     static NumberFormat lnf = new DecimalFormat("00E0");
 
     /**
      * create a string representation whose gray value appears as an indicator
      * of magnitude, cf. Hinton diagrams in statistics.
-     * 
-     * @param d
-     *            value
-     * @param max
-     *            maximum value
+     *
+     * @param d   value
+     * @param max maximum value
      * @return
      */
     public static String shadefloat(float d, float max) {

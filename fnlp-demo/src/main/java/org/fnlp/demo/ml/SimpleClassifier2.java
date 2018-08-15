@@ -1,26 +1,24 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.demo.ml;
 
-
-import java.io.File;
 
 import org.fnlp.data.reader.SimpleFileReader;
 import org.fnlp.ml.classifier.linear.Linear;
@@ -35,72 +33,73 @@ import org.fnlp.ml.types.InstanceSet;
 import org.fnlp.ml.types.alphabet.AlphabetFactory;
 import org.fnlp.ml.types.alphabet.IFeatureAlphabet;
 import org.fnlp.ml.types.alphabet.LabelAlphabet;
-import org.fnlp.nlp.pipe.StringArray2IndexArray;
 import org.fnlp.nlp.pipe.Pipe;
 import org.fnlp.nlp.pipe.SeriesPipes;
+import org.fnlp.nlp.pipe.StringArray2IndexArray;
 import org.fnlp.nlp.pipe.Target2Label;
+
+import java.io.File;
 
 /**
  * 线性分类器使用示例
- * 
+ *
  * @author xpqiu
- * 
  */
 public class SimpleClassifier2 {
-	static InstanceSet train;
-	static InstanceSet test;
-	static AlphabetFactory factory = AlphabetFactory.buildFactory();
-	static LabelAlphabet al = factory.DefaultLabelAlphabet();
-	static IFeatureAlphabet af = factory.DefaultFeatureAlphabet();
-	static String path = null;
+    static InstanceSet train;
+    static InstanceSet test;
+    static AlphabetFactory factory = AlphabetFactory.buildFactory();
+    static LabelAlphabet al = factory.DefaultLabelAlphabet();
+    static IFeatureAlphabet af = factory.DefaultFeatureAlphabet();
+    static String path = null;
 
-	public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-		
-		long start = System.currentTimeMillis();
 
-		path = "../example-data/data-classification.txt";
+        long start = System.currentTimeMillis();
 
-		Pipe lpipe = new Target2Label(al);
-		Pipe fpipe = new StringArray2IndexArray(factory, true);
-		//构造转换器组
-		Pipe pipe = new SeriesPipes(new Pipe[]{lpipe,fpipe});
-		
-		//构建训练集
-		train = new InstanceSet(pipe, factory);
-		SimpleFileReader reader = new SimpleFileReader (path,true);
-		train.loadThruStagePipes(reader);
-		al.setStopIncrement(true);
-		
-		//构建测试集
-		test = new InstanceSet(pipe, factory);		
-		reader = new SimpleFileReader (path,true);
-		test.loadThruStagePipes(reader);	
+        path = "../example-data/data-classification.txt";
 
-		System.out.println("Train Number: " + train.size());
-		System.out.println("Test Number: " + test.size());
-		System.out.println("Class Number: " + al.size());
+        Pipe lpipe = new Target2Label(al);
+        Pipe fpipe = new StringArray2IndexArray(factory, true);
+        //构造转换器组
+        Pipe pipe = new SeriesPipes(new Pipe[]{lpipe, fpipe});
 
-		float c = 1.0f;
-		int round = 20;
-		
-		Generator featureGen = new SFGenerator();
-		ZeroOneLoss loss = new ZeroOneLoss();
-		LinearMaxPAUpdate update = new LinearMaxPAUpdate(loss);
-		
-		
-		Inferencer msolver = new LinearMax(featureGen, al.size() );
-		OnlineTrainer trainer = new OnlineTrainer(msolver, update, loss, factory, round,
-				c);
+        //构建训练集
+        train = new InstanceSet(pipe, factory);
+        SimpleFileReader reader = new SimpleFileReader(path, true);
+        train.loadThruStagePipes(reader);
+        al.setStopIncrement(true);
 
-		Linear classify = trainer.train(train, test);
-		String modelFile = path+".m.gz";
-		classify.saveTo(modelFile);
+        //构建测试集
+        test = new InstanceSet(pipe, factory);
+        reader = new SimpleFileReader(path, true);
+        test.loadThruStagePipes(reader);
 
-		long end = System.currentTimeMillis();
-		System.out.println("Total Time: " + (end - start));
-		System.out.println("End!");
-		(new File(modelFile)).deleteOnExit();
-		System.exit(0);
-	}
+        System.out.println("Train Number: " + train.size());
+        System.out.println("Test Number: " + test.size());
+        System.out.println("Class Number: " + al.size());
+
+        float c = 1.0f;
+        int round = 20;
+
+        Generator featureGen = new SFGenerator();
+        ZeroOneLoss loss = new ZeroOneLoss();
+        LinearMaxPAUpdate update = new LinearMaxPAUpdate(loss);
+
+
+        Inferencer msolver = new LinearMax(featureGen, al.size());
+        OnlineTrainer trainer = new OnlineTrainer(msolver, update, loss, factory, round,
+                c);
+
+        Linear classify = trainer.train(train, test);
+        String modelFile = path + ".m.gz";
+        classify.saveTo(modelFile);
+
+        long end = System.currentTimeMillis();
+        System.out.println("Total Time: " + (end - start));
+        System.out.println("End!");
+        (new File(modelFile)).deleteOnExit();
+//        System.exit(0);
+    }
 }

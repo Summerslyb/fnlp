@@ -1,48 +1,37 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.nlp.similarity.train;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import gnu.trove.iterator.TIntFloatIterator;
+import gnu.trove.map.hash.TIntFloatHashMap;
+import org.fnlp.ml.types.alphabet.LabelAlphabet;
+import org.fnlp.ml.types.sv.HashSparseVector;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.fnlp.ml.types.alphabet.LabelAlphabet;
-import org.fnlp.ml.types.sv.HashSparseVector;
-import org.fnlp.nlp.cn.ChineseTrans;
-
-import gnu.trove.iterator.TIntFloatIterator;
-import gnu.trove.map.hash.TIntFloatHashMap;
-
 class TrainInstance implements Serializable {
-	private static final long serialVersionUID = 1467092492463327579L;
+    private static final long serialVersionUID = 1467092492463327579L;
 
     private String key;
     private HashSparseVector vector;
@@ -82,7 +71,7 @@ class TrainInstance implements Serializable {
 }
 
 public class KMeansWordCluster implements Serializable {
-	private static final long serialVersionUID = 1467092492463327579L;
+    private static final long serialVersionUID = 1467092492463327579L;
 
     private LabelAlphabet alphabet = new LabelAlphabet();
     private HashMap<String, ArrayList<HashSparseVector>> trainData = new HashMap<String, ArrayList<HashSparseVector>>();
@@ -98,7 +87,7 @@ public class KMeansWordCluster implements Serializable {
     private String trainPath;
 
     public KMeansWordCluster(String templatePath, String dataPath,
-            String classPath) {
+                             String classPath) {
         this.trainPath = dataPath;
         try {
             readTemplete(templatePath);
@@ -112,9 +101,9 @@ public class KMeansWordCluster implements Serializable {
     public KMeansWordCluster(String alphabetPath, String classCenterPath, String templatePath, String classPath) throws Exception {
         readTemplete(templatePath);
         readClass(classPath);
-        LabelAlphabet alphabetRead = (LabelAlphabet)loadObject(alphabetPath);
+        LabelAlphabet alphabetRead = (LabelAlphabet) loadObject(alphabetPath);
         @SuppressWarnings("unchecked")
-        ArrayList<HashSparseVector> classCenterRead = (ArrayList<HashSparseVector>)loadObject(classCenterPath);
+        ArrayList<HashSparseVector> classCenterRead = (ArrayList<HashSparseVector>) loadObject(classCenterPath);
         setAlphabet(alphabetRead);
         setClassCenter(classCenterRead);
         addClassCount();
@@ -259,10 +248,10 @@ public class KMeansWordCluster implements Serializable {
         String[] seq = new String[length];
         for (int i = 0; i < longestTemplate; i++) {
             seq[i] = "Begin" + i;
-            seq[length-i-1] = "End" + i;
+            seq[length - i - 1] = "End" + i;
         }
         for (int i = 0; i < s.length(); i++)
-            seq[i+longestTemplate] = String.valueOf(s.charAt(i));
+            seq[i + longestTemplate] = String.valueOf(s.charAt(i));
         return seq;
     }
 
@@ -332,7 +321,7 @@ public class KMeansWordCluster implements Serializable {
     }
 
     private void initAddInstanceList(ArrayList<TrainInstance> trainData) {
-        for (TrainInstance ele : trainData) { 
+        for (TrainInstance ele : trainData) {
             initAddInstance(ele);
         }
     }
@@ -345,7 +334,7 @@ public class KMeansWordCluster implements Serializable {
             return;
         for (int n : classNum) {
             int count = classCount.get(n);
-            classCount.set(n, count+1);
+            classCount.set(n, count + 1);
             HashSparseVector vectorcenter = classCenter.get(n);
             vectorcenter.plus(vector);
         }
@@ -386,7 +375,7 @@ public class KMeansWordCluster implements Serializable {
             ArrayList<TrainInstance> trainData = genFeatures(s);
             clusterList(trainData);
             printTerminal(n, 10000, "cluster line");
-            if ((n+1) % 10000 == 0)
+            if ((n + 1) % 10000 == 0)
                 saveObject("tmpdata/classCenterTemp", classCenter);
             n++;
         }
@@ -445,8 +434,7 @@ public class KMeansWordCluster implements Serializable {
             int key = it.key();
             if (!data.containsKey(key)) {
                 dist += it.value() * it.value();
-            }
-            else {
+            } else {
                 float temp = data.get(key) / count;
                 dist -= temp * temp;
                 dist += (it.value() - temp) * (it.value() - temp);
@@ -455,7 +443,7 @@ public class KMeansWordCluster implements Serializable {
         return dist;
     }
 
-    float distanceEuclidean(HashSparseVector sv1 ,HashSparseVector sv2) {
+    float distanceEuclidean(HashSparseVector sv1, HashSparseVector sv2) {
         float dist = 0.0f;
         TIntFloatIterator it1 = sv1.data.iterator();
         TIntFloatIterator it2 = sv2.data.iterator();
@@ -464,15 +452,15 @@ public class KMeansWordCluster implements Serializable {
             it2.advance();
         }
         while (it1.hasNext() && it2.hasNext()) {
-            if(it1.key()<it2.key()){
-                dist += it1.value()*it1.value();
+            if (it1.key() < it2.key()) {
+                dist += it1.value() * it1.value();
                 it1.advance();
-            }else if(it1.key()>it2.key()){
-                dist += it2.value()*it2.value();
+            } else if (it1.key() > it2.key()) {
+                dist += it2.value() * it2.value();
                 it2.advance();
-            }else{
+            } else {
                 float t = it1.value() - it2.value();
-                dist += t*t;
+                dist += t * t;
                 it1.advance();
                 it2.advance();
             }
@@ -490,7 +478,7 @@ public class KMeansWordCluster implements Serializable {
 
     private void updateCenter(int classid, HashSparseVector vector) {
         int count = classCount.get(classid);
-        classCount.set(classid, count+1);
+        classCount.set(classid, count + 1);
         HashSparseVector vectorcenter = classCenter.get(classid);
         updateBaseDist(classid, vector);
         vectorcenter.plus(vector);
@@ -500,13 +488,12 @@ public class KMeansWordCluster implements Serializable {
     private void updateBaseDist(int classid, HashSparseVector vector) {
         float base = baseDistList.get(classid);
         TIntFloatHashMap center = classCenter.get(classid).data;
-        TIntFloatIterator it =  vector.data.iterator();
+        TIntFloatIterator it = vector.data.iterator();
         while (it.hasNext()) {
             it.advance();
             if (!center.containsKey(it.key())) {
                 base += it.value() * it.value();
-            }
-            else {
+            } else {
                 float temp = center.get(it.key());
                 base -= temp * temp;
                 base += (it.value() - temp) * (it.value() - temp);
@@ -553,7 +540,7 @@ public class KMeansWordCluster implements Serializable {
     }
 
     public int classifier(String s) {
-    	
+
         TrainInstance instance = genFeaForClassifier(s);
         return minClass(instance);
     }
@@ -564,7 +551,7 @@ public class KMeansWordCluster implements Serializable {
         for (int i = 0; i < template.size(); i++) {
             int[] fea = template.get(i);
             String eleFea = i + ":" + perFea(1, seqFea, fea);
-            int id  = alphabet.lookupIndex(eleFea);
+            int id = alphabet.lookupIndex(eleFea);
             feaId[i] = id;
         }
         HashSparseVector hsvector = new HashSparseVector();
@@ -578,13 +565,11 @@ public class KMeansWordCluster implements Serializable {
             seq[0] = "Begin0";
             seq[1] = String.valueOf(s.charAt(6));
             seq[2] = String.valueOf(s.charAt(7));
-        }
-        else if (s.endsWith("End0")) {
+        } else if (s.endsWith("End0")) {
             seq[0] = String.valueOf(s.charAt(0));
             seq[1] = String.valueOf(s.charAt(1));
             seq[2] = "End0";
-        }
-        else 
+        } else
             for (int i = 0; i < s.length(); i++)
                 seq[i] = String.valueOf(s.charAt(i));
         return seq;
@@ -609,13 +594,13 @@ public class KMeansWordCluster implements Serializable {
             System.out.println(kmwc.classifier("Begin0几日"));
             System.out.println(kmwc.classifier("几日End0"));
         }
-        if(args.length==0){
-        	KMeansWordCluster kmwc = new KMeansWordCluster(
-					"./exp/featureCluster/alphabet","./exp/featureCluster/clusterCenter",
-					"./exp/featureCluster/template","./exp/featureCluster/charsynset.txt");
+        if (args.length == 0) {
+            KMeansWordCluster kmwc = new KMeansWordCluster(
+                    "./exp/featureCluster/alphabet", "./exp/featureCluster/clusterCenter",
+                    "./exp/featureCluster/template", "./exp/featureCluster/charsynset.txt");
 //        	System.out.println(kmwc.classifier("新款intel处理器"));
-        	System.out.println(kmwc.classifier("１２３"));
-        	System.out.println(kmwc.classifier("123"));
+            System.out.println(kmwc.classifier("１２３"));
+            System.out.println(kmwc.classifier("123"));
             System.out.println(kmwc.classifier("sdf"));
             System.out.println(kmwc.classifier("ＡＢＢ"));
             System.out.println(kmwc.classifier("gjl"));

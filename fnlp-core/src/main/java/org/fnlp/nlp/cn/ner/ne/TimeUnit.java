@@ -1,21 +1,21 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.nlp.cn.ner.ne;
 
@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 
+ *
  * @author xpqiu
  *
  */
@@ -34,7 +34,7 @@ public class TimeUnit {
     /*
      * 新版本中将根据上下文相关信息动态获得timeBase,故取消参数Time_Initial
      * 及相关构造方法，添加参数normalizer。
-     * 
+     *
      * modified by 曹零
      */
 
@@ -60,10 +60,10 @@ public class TimeUnit {
      * 对应时间表达式规范化的每个字段，
      * 六个字段分别是：年-月-日-时-分-秒，
      * 每个字段初始化为-1
-     * 
+     *
      * @author 邬桐 072021156
      * @version 1.0 2009-02-12
-     *  
+     *
      */
     public class TimePoint {
 
@@ -92,9 +92,9 @@ public class TimeUnit {
         return Time_Expression;
     }
 
-	/**
-	 * return the accurate time object
-	 */
+    /**
+     * return the accurate time object
+     */
     public Date getTime() {
         return time;
     }
@@ -103,7 +103,7 @@ public class TimeUnit {
      *年-规范化方法
      *
      *该方法识别时间表达式单元的年字段
-     * 
+     *
      */
     public void norm_setyear() {
         String rule = "[0-9]{2}(?=年)";
@@ -137,7 +137,7 @@ public class TimeUnit {
      *月-规范化方法
      *
      *该方法识别时间表达式单元的月字段
-     * 
+     *
      */
     public void norm_setmonth() {
         String rule = "((10)|(11)|(12)|([1-9]))(?=月)";
@@ -152,7 +152,7 @@ public class TimeUnit {
      *日-规范化方法
      *
      *该方法识别时间表达式单元的日字段
-     * 
+     *
      */
     public void norm_setday() {
         String rule = "((?<!\\d))([0-3][0-9]|[1-9])(?=(日|号))";
@@ -167,7 +167,7 @@ public class TimeUnit {
      *时-规范化方法
      *
      *该方法识别时间表达式单元的时字段
-     * 
+     *
      */
     public void norm_sethour() {
         /*
@@ -188,7 +188,7 @@ public class TimeUnit {
          * 2.下午/午后0-11点视为12-23点
          * 3.晚上/傍晚/晚间/晚1-11点视为13-23点，12点视为0点
          * 4.0-11点pm/PM视为12-23点
-         * 
+         *
          * add by 曹零
          */
         rule = "(中午)|(午间)";
@@ -225,7 +225,7 @@ public class TimeUnit {
      *分-规范化方法
      *
      *该方法识别时间表达式单元的分字段
-     * 
+     *
      */
     public void norm_setminute() {
         /*
@@ -245,7 +245,7 @@ public class TimeUnit {
         }
         /*
          * 添加对一刻，半，3刻的正确识别（1刻为15分，半为30分，3刻为45分）
-         * 
+         *
          * add by 曹零
          */
         rule = "(?<=[点时])[1一]刻(?!钟)";
@@ -275,7 +275,7 @@ public class TimeUnit {
      *秒-规范化方法
      *
      *该方法识别时间表达式单元的秒字段
-     * 
+     *
      */
     public void norm_setsecond() {
         /*
@@ -296,7 +296,7 @@ public class TimeUnit {
      *特殊形式的规范化方法
      *
      *该方法识别特殊形式的时间表达式单元的各个字段
-     * 
+     *
      */
     public void norm_setTotal() {
         String rule;
@@ -413,7 +413,7 @@ public class TimeUnit {
 
     /**
      * 设置以上文时间为基准的时间偏移计算
-     * 
+     *
      * add by 曹零
      */
     public void norm_setBaseRelated() {
@@ -667,7 +667,7 @@ public class TimeUnit {
 
     /**
      * 设置当前时间相关的时间表达式
-     * 
+     *
      * add by 曹零
      */
     public void norm_setCurRelated() {
@@ -924,7 +924,7 @@ public class TimeUnit {
      *
      *时间表达式识别后，通过此入口进入规范化阶段，
      *具体识别每个字段的值
-     * 
+     *
      */
     private void Time_Normalization() {
         norm_setyear();
@@ -965,7 +965,7 @@ public class TimeUnit {
             _result_tmp[i] = String.valueOf(_tp.tunit[i]);
         }
 
-        Calendar cale = Calendar.getInstance();			//leverage a calendar object to figure out the final time
+        Calendar cale = Calendar.getInstance();            //leverage a calendar object to figure out the final time
         cale.clear();
         if (Integer.parseInt(_result_tmp[0]) != -1) {
             Time_Norm += _result_tmp[0] + "年";

@@ -1,21 +1,21 @@
 /**
-*  This file is part of FNLP (formerly FudanNLP).
-*  
-*  FNLP is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU Lesser General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*  
-*  FNLP is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU Lesser General Public License for more details.
-*  
-*  You should have received a copy of the GNU General Public License
-*  along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
-*  
-*  Copyright 2009-2014 www.fnlp.org. All rights reserved. 
-*/
+ * This file is part of FNLP (formerly FudanNLP).
+ * <p>
+ * FNLP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * FNLP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with FudanNLP.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * Copyright 2009-2014 www.fnlp.org. All rights reserved.
+ */
 
 package org.fnlp.ml.classifier.linear.inf;
 
@@ -30,41 +30,41 @@ import org.fnlp.ml.types.sv.ISparseVector;
  */
 public class LinearMax extends Inferencer {
 
-	private static final long serialVersionUID = -7602321210007971450L;
-	
-	private Generator generator;
-	private int ysize;
+    private static final long serialVersionUID = -7602321210007971450L;
 
-	public LinearMax(Generator generator, int ysize) {
-		this.generator = generator;
-		this.ysize = ysize;
-	}
-	
-	public Predict getBest(Instance inst)	{
-		return getBest(inst, 1);
-	}
+    private Generator generator;
+    private int ysize;
 
-	public Predict getBest(Instance inst, int n) {
+    public LinearMax(Generator generator, int ysize) {
+        this.generator = generator;
+        this.ysize = ysize;
+    }
 
-		Integer target = null;
-		if (isUseTarget && inst.getTarget() != null)
-			target = (Integer) inst.getTarget();
+    public Predict getBest(Instance inst) {
+        return getBest(inst, 1);
+    }
 
-		Predict<Integer> pred = new Predict<Integer>(n);
-		Predict<Integer> oracle = null;
-		if (target != null) {
-			oracle = new Predict<Integer>(n);
-		}
+    public Predict getBest(Instance inst, int n) {
 
-		for (int i = 0; i < ysize; i++) {
-			ISparseVector fv = generator.getVector(inst, i);
-			float score = fv.dotProduct(weights);
-			if (target != null && target == i)
-				oracle.add(i,score);
-			else
-				pred.add(i,score);
-		}
-		return pred;
-	}
-	
+        Integer target = null;
+        if (isUseTarget && inst.getTarget() != null)
+            target = (Integer) inst.getTarget();
+
+        Predict<Integer> pred = new Predict<Integer>(n);
+        Predict<Integer> oracle = null;
+        if (target != null) {
+            oracle = new Predict<Integer>(n);
+        }
+
+        for (int i = 0; i < ysize; i++) {
+            ISparseVector fv = generator.getVector(inst, i);
+            float score = fv.dotProduct(weights);
+            if (target != null && target == i)
+                oracle.add(i, score);
+            else
+                pred.add(i, score);
+        }
+        return pred;
+    }
+
 }
