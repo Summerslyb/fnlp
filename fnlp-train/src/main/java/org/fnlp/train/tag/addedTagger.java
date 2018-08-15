@@ -100,8 +100,8 @@ public class addedTagger {
     }
 
     /**
-     * 训练： java -classpath fudannlp.jar edu.fudan.nlp.tag.Tagger -train template train model
-     * 测试： java -classpath fudannlp.jar edu.fudan.nlp.tag.Tagger model test [result]
+     * 训练： java -classpath fudannlp.jar org.fulp.nlp.tag.Tagger -train template train model
+     * 测试： java -classpath fudannlp.jar org.fulp.nlp.tag.Tagger model test [result]
      *
      * @param args
      * @throws Exception

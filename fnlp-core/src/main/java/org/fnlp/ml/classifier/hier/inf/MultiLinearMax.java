@@ -42,7 +42,7 @@ import java.util.concurrent.Future;
 /**
  * 树层次结构求最大
  * @author xpqiu
- * @version 1.0 LinearMax package edu.fudan.ml.solver
+ * @version 1.0 LinearMax package org.fulp.ml.solver
  */
 public class MultiLinearMax extends Inferencer implements Serializable {
 

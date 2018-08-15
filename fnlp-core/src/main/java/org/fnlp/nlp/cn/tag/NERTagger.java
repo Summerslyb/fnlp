@@ -118,8 +118,8 @@ public class NERTagger {
             HelpFormatter f = new HelpFormatter();
             f.printHelp(
                     "Tagger:\n"
-                            + "java edu.fudan.nlp.tag.NERTagger -f segmodel posmodel input_file output_file;\n"
-                            + "java edu.fudan.nlp.tag.NERTagger -s segmodel posmodel string_to_segement",
+                            + "java org.fulp.nlp.tag.NERTagger -f segmodel posmodel input_file output_file;\n"
+                            + "java org.fulp.nlp.tag.NERTagger -s segmodel posmodel string_to_segement",
                     opt);
             return;
         }

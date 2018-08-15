@@ -1,5 +1,5 @@
 /**
- * 解码器包，配合 edu.fudan.ml.classifier.linear中的分类器使用.
+ * 解码器包，配合 org.fulp.ml.classifier.linear中的分类器使用.
  *
  * <p>This file is part of FudanNLP.
  *

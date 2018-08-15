@@ -33,7 +33,7 @@ import java.util.*;
  * @author xpqiu
  * @version 1.0
  * Tree
- * package edu.fudan.ml.types
+ * package org.fulp.ml.types
  */
 public class Tree implements Serializable {
 

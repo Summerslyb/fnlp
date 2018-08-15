@@ -29,7 +29,7 @@ import gnu.trove.map.hash.TLongObjectHashMap;
  * @author xpqiu
  * @version 1.0
  * SparseMatrix
- * package edu.fudan.ml.types
+ * package org.fulp.ml.types
  */
 public class SparseMatrix<T> {
 

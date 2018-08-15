@@ -33,7 +33,7 @@ import java.util.LinkedList;
  * 不同类别存放在各自文件中
  * 类别：文件名
  * 数据：文件内的一行字符
- * package edu.fudan.ml.data
+ * package org.fulp.ml.data
  */
 public class FileReader extends Reader {
 

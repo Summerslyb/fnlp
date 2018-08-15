@@ -26,7 +26,7 @@ import org.fnlp.ml.types.Instance;
  * @author xpqiu
  * @version 1.0
  * StringReader
- * package edu.fudan.ml.data
+ * package org.fulp.ml.data
  */
 public class StringReader extends Reader {
     String[] data;

@@ -31,7 +31,7 @@ import java.io.Serializable;
  * @author xpqiu
  * @version 1.0
  * Classifier
- * package edu.fudan.ml.classifier
+ * package org.fulp.ml.classifier
  */
 public abstract class AbstractClassifier implements Serializable {
 

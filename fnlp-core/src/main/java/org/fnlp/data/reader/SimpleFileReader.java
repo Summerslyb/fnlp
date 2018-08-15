@@ -34,7 +34,7 @@ import java.util.List;
  * 或者
  * 数据 ＋ “分隔符” ＋ 类别
  *
- * package edu.fudan.ml.data
+ * package org.fulp.ml.data
  */
 public class SimpleFileReader extends Reader {
 

@@ -328,8 +328,8 @@ public class POSTagger extends AbstractTagger {
             HelpFormatter f = new HelpFormatter();
             f.printHelp(
                     "Tagger:\n"
-                            + "java edu.fudan.nlp.tag.POSTagger -f cws_model_file pos_model_file input_file output_file;\n"
-                            + "java edu.fudan.nlp.tag.POSTagger -s cws_model_file pos_model_file string_to_segement",
+                            + "java org.fulp.nlp.tag.POSTagger -f cws_model_file pos_model_file input_file output_file;\n"
+                            + "java org.fulp.nlp.tag.POSTagger -s cws_model_file pos_model_file string_to_segement",
                     opt);
             return;
         }
